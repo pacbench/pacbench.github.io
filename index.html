@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Primary Meta Tags -->
+  <title>PAC Bench: Do Foundation Models Understand Prerequisites for Executing Manipulation Policies?</title>
+  <meta name="title" content="PAC Bench: Do Foundation Models Understand Prerequisites for Executing Manipulation Policies?" />
+  <meta name="description" content="A comprehensive benchmark designed to systematically evaluate VLM comprehension of Properties, Affordances, and Constraints (PAC) from a task executability perspective. Features over 30,000 annotations across real-world images and simulated scenarios." />
+  <meta name="keywords" content="vision language models, VLM, robotics, manipulation, affordances, properties, constraints, benchmark, PAC, physical reasoning, robot learning" />
+  <meta name="author" content="Anonymous Authors" />
+  <meta name="robots" content="index, follow" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pacbench.github.io/" />
+  <meta property="og:title" content="PAC Bench: Do Foundation Models Understand Prerequisites for Executing Manipulation Policies?" />
+  <meta property="og:description" content="A comprehensive benchmark designed to systematically evaluate VLM comprehension of Properties, Affordances, and Constraints (PAC) from a task executability perspective. Features over 30,000 annotations across real-world images and simulated scenarios." />
+  <meta property="og:image" content="https://pacbench.github.io/images/PAC_logo.png" />
+  <meta property="og:image:width" content="200" />
+  <meta property="og:image:height" content="200" />
+  <meta property="og:image:alt" content="PAC Bench Logo" />
+  <meta property="og:site_name" content="PAC Bench" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://pacbench.github.io/" />
+  <meta property="twitter:title" content="PAC Bench: Do Foundation Models Understand Prerequisites for Executing Manipulation Policies?" />
+  <meta property="twitter:description" content="A comprehensive benchmark designed to systematically evaluate VLM comprehension of Properties, Affordances, and Constraints (PAC) from a task executability perspective. Features over 30,000 annotations across real-world images and simulated scenarios." />
+  <meta property="twitter:image" content="https://pacbench.github.io/images/PAC_logo.png" />
+  <meta property="twitter:image:alt" content="PAC Bench Logo" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/PAC_logo.png" />
+  <link rel="apple-touch-icon" href="images/PAC_logo.png" />
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://pacbench.github.io/" />
+  
+  <!-- External Resources -->
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <style>
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family:'Google Sans', 'Noto Sans', 'Castoro', sans-serif;;
+      background-color: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    /* Container for Logo + Title */
+    .title-container {
+      display: inline-flex;
+      justify-content: center;
+      gap: -50px; /* Space between logo and text */
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Logo Styling */
+    /* .title-container img {
+      width: 50px; 
+      height: 50px;
+      margin-top: 5px; 
+    } */
+
+    /* Title Styling */
+    .main-title {
+      font-size: 3rem; /* Bigger font */
+      font-weight: bold;
+      text-align: center; /* Ensures natural left alignment */
+      line-height: 1.3; /* Space between lines */
+      max-width: 900px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #555;
+      margin-top: 5px;
+    }
+
+
+    .video-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+
+    video {
+      width: 120%;
+      max-width: 1000px;
+      border-radius: 4px;
+      border: none; /* Remp4es the border */
+      outline: none; /* Remp4es any focus outline */
+    }
+
+    .dropdown-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      min-width: 150px;
+    }
+
+    /* Abstract Section Styling */
+    .abstract-container {
+        text-align: center;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .abstract-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .abstract-text {
+        font-size: 1.1rem;
+        text-align: justify;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    /* Summary Section */
+    .summary-container {
+    text-align: center;
+    max-width: 1000px;
+    margin: 40px auto;    /* centers the section on the page */
+    padding: 20px;
+    }
+
+    .summary-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    }
+
+    .summary-figure {
+    margin: 0 auto 20px auto; /* center figure, add bottom spacing */
+    }
+
+    .summary-img {
+    width: 100%;
+    max-width: 1000px;     /* ensures figure doesn't get too large */
+    border-radius: 4px;
+    }
+
+    .summary-text {
+    font-size: 1.1rem;
+    text-align: justify;
+    line-height: 1.6;
+    color: #333;
+    }
+
+    /* Experiments & Results Section */
+    .experiments-container {
+    text-align: center;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    }
+
+    .experiments-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    }
+
+    .experiments-figure {
+    margin: 0 auto 20px auto;
+    }
+
+    .experiments-img {
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 4px;
+    }
+
+    .experiments-text {
+    font-size: 1.1rem;
+    text-align: justify;
+    line-height: 1.6;
+    color: #333;
+    }
+
+    .slider-container {
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider video {
+            width: calc(100% / 3); /* Show 3 videos at a time */
+            height: auto;
+            flex-shrink: 0;
+            padding: 5px;
+            box-sizing: border-box;
+            border-radius: 20px;
+        }
+
+        .slider-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 24px;
+            transition: background-color 0.3s ease;
+        }
+
+        .slider-control:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .slider-control.prev {
+            left: 10px;
+        }
+
+        .slider-control.next {
+            right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .slider video {
+                width: calc(100% / 2); /* Show 2 videos at a time on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider video {
+                width: 100%; /* Show 1 video at a time on mobile screens */
+            }
+        }
+
+        #secondaryVideo {
+            width: 400px; /* Adjust width as needed */
+            height: auto;  /* Keeps aspect ratio */
+            max-width: 100%; /* Ensures it doesn't overflow */
+            border-radius: 8px; /* Optional rounded corners */
+        }
+
+        .dropdown-container {
+        display: flex;
+        align-items: center; /* Centers items vertically */
+        gap: 10px; /* Adjusts spacing between elements */
+        }
+
+        .dropdown-container select {
+        padding: 5px;
+        font-size: 14px;
+        }
+
+        .title-container img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.code-data-container {
+  display: flex;
+  gap: 2rem;        /* space between each icon block */
+  flex-wrap: wrap;  /* let items wrap on smaller screens */
+  align-items: center;
+  justify-content: center; /* center the entire row horizontally */
+}
+
+    /* Each icon + text is stacked in a column */
+    .icon-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .icon-block img {
+      width: 60px;  /* adjust as needed */
+      height: auto;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Style the links (teal color, underlined) */
+    .icon-block a {
+      color: #008B8B;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    
+    /* Subtle dashed or dotted underline look:
+       If you prefer dotted, replace 'dashed' with 'dotted'. */
+    .icon-block a {
+      text-decoration: none;
+      border-bottom: 1px dashed #008B8B;
+      padding-bottom: 2px;
+    }
+    .icon-block a:hover {
+      border-bottom-style: solid;  /* hover effect */
+    }
+
+    /* Slider Styles */
+    .dataset-slider {
+      position: relative;
+      margin: 20px auto;
+      max-width: 1000px;
+    }
+    
+    .slider-wrapper {
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      padding: 10px 0;
+      /* Custom scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: #008B8B #f0f0f0;
+    }
+    
+    .slider-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .slider-wrapper::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    .slider-wrapper::-webkit-scrollbar-thumb {
+      background: #008B8B;
+      border-radius: 4px;
+    }
+    
+    .slider-wrapper::-webkit-scrollbar-thumb:hover {
+      background: #006666;
+    }
+    
+    .slider-content {
+      display: inline-flex;
+      gap: 15px;
+      padding: 0 10px;
+    }
+    
+    .slider-item {
+      display: inline-block;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    
+    .scroll-indicator {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #666;
+      font-style: italic;
+    }
+    
+    /* Rotating animation for RoboCasa objects */
+    @keyframes rotate360 {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    
+    .rotating-object {
+      animation: rotate360 4s linear infinite;
+      transform-style: preserve-3d;
+    }
+    
+    .rotating-object:hover {
+      animation-play-state: paused;
+    }
+
+  </style>
+</head>
+<body>
+<header>
+    <div class="title-container">
+        <h1 class="main-title">
+            <img src="images/PAC_logo.png" alt="PAC Logo">
+            PAC Bench: Do Foundation Models Understand<br> 
+            Prerequisites for Executing Manipulation<br>
+            Policies?
+        </h1>
+    </div>
+    <br>
+    <br>
+    <div class="subtitle">
+        <strong>Anonymous Authors</strong>
+        <br>
+        <span>
+            <em>Under review (double-blind)</em>
+        </span>
+    </div>
+</header>
+<br>
+
+<br>
+<center>
+  <div class="code-data-container">
+    
+    <!-- GitHub Repo -->
+    <div class="icon-block">
+      <img src="images/github-mark.png" alt="GitHub Icon">
+      <a href="https://github.com/pacbench/pacbench.github.io" target="_blank">
+        Code
+      </a>
+    </div>
+
+    <!-- Dataset on HuggingFace -->
+    <div class="icon-block">
+      <img src="images/hf-logo.png" alt="HuggingFace Icon">
+      <a href="https://huggingface.co/datasets/Pacbench/pacbench" target="_blank">
+        Dataset
+      </a>
+    </div>
+
+    <!-- Paper PDF -->
+    <div class="icon-block">
+      <img src="images/file.png" alt="PDF Icon">
+      <a href="https://pacbench.github.io/" target="_blank">
+        Paper
+      </a>
+    </div>
+    
+    <!-- Data Exploration Button -->
+    <div class="icon-block">
+      <img src="images/hf-logo.png" alt="Explore Icon">
+      <a href="#data-exploration" style="text-decoration: none; border-bottom: 1px dashed #008B8B; padding-bottom: 2px;">
+        Explore Data
+      </a>
+    </div>
+</center>
+<br>
+    
+  <!-- Main Figure Section -->
+  <div class="video-container">
+    <img src="images/const.png" alt="PAC Bench Example Scenarios" style="width: 100%; max-width: 1000px; border-radius: 4px;">
+  </div>
+
+
+
+
+
+  <!-- Abstract Section -->
+  <section class="abstract-container">
+      <h2 class="abstract-title">Abstract</h2>
+      <p class="abstract-text">
+        Vision-Language Models (VLMs) are increasingly pivotal for generalist robot manipulation, enabling tasks such as physical reasoning, policy generation, and failure detection. However, their proficiency in these high-level applications often assumes a deep understanding of low-level physical prerequisites, a capability that is largely unverified. To perform actions reliably, robots must comprehend intrinsic object properties (e.g., material, weight), action affordances (e.g., graspable, stackable), and physical constraints (e.g., stability, reachability, or an object's state like being closed). Despite their ubiquitous use in manipulation, we argue that off-the-shelf VLMs may lack this granular, physically-grounded understanding, as these specific prerequisites are often overlooked in their pre-training. Addressing this critical gap, we introduce <strong>PAC Bench</strong>, a comprehensive benchmark designed to systematically evaluate VLM comprehension of these core <strong>P</strong>roperties, <strong>A</strong>ffordances, and <strong>C</strong>onstraints (PAC) from a task executability perspective. PAC Bench features a diverse dataset with over 30,000 annotations, comprising 673 real-world images (115 object classes, 15 property types, 1–3 affordances defined per class), 100 real-world humanoid-view scenarios and 120 unique simulated constraint scenarios across four tasks. Our evaluations reveal significant gaps in the ability of VLMs to grasp fundamental physical concepts, underscoring their current limitations for reliable robot manipulation and pointing to key areas that require targeted research. PAC Bench also serves as a standardized benchmark for rigorously evaluating VLM physical reasoning and guiding the development of more robust and physically grounded models for robotic manipulation.
+      </p>
+  </section>
+
+  <!-- Data Exploration Section -->
+  <section id="data-exploration" class="experiments-container">
+    <h2 class="experiments-title">Data Exploration</h2>
+    <p class="experiments-text">
+        Explore representative samples from the four datasets comprising PAC Bench. Each dataset provides unique perspectives and scenarios for evaluating foundation models' understanding of properties, affordances, and constraints in robotic manipulation.
+    </p>
+    
+    <!-- Constraint Images Dataset -->
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 15px;">Constraint Images Dataset</h3>
+    <p style="text-align: center; margin-bottom: 20px; font-style: italic;">Simulated scenarios designed to test understanding of physical constraints like impossible placement, stability, and reachability.</p>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin: 20px 0;">
+      <div style="text-align: center;">
+        <img src="images/constraint_impossible_place.png" alt="Impossible Placement Constraint" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+        <p style="margin-top: 8px; font-size: 14px;">Impossible Placement</p>
+      </div>
+      <div style="text-align: center;">
+        <img src="images/constraint_stack_bottom.png" alt="Stack Bottom Constraint" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+        <p style="margin-top: 8px; font-size: 14px;">Support/Occlusion Issues</p>
+      </div>
+      <div style="text-align: center;">
+        <img src="images/constraint_stack_edge.png" alt="Stack Edge Constraint" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+        <p style="margin-top: 8px; font-size: 14px;">Stability Constraints</p>
+      </div>
+      <div style="text-align: center;">
+        <img src="images/constraint_reachability.png" alt="Reachability Constraint" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+        <p style="margin-top: 8px; font-size: 14px;">Reachability Issues</p>
+      </div>
+    </div>
+    
+    <!-- Humanoid Dataset -->
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 15px;">Humanoid Robot Dataset</h3>
+    <p style="text-align: center; margin-bottom: 20px; font-style: italic;">Real-world captures from Unitree G1 humanoid robot perspective for authentic constraint scenarios.</p>
+    <div class="dataset-slider">
+      <div class="slider-wrapper">
+        <div class="slider-content">
+          <div class="slider-item">
+            <img src="images/humanoid_sample.png" alt="Humanoid Robot View 1" style="width: 300px; height: 225px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Tabletop manipulation scenario</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robo_a_view_0.jpeg" alt="Humanoid Robot View 2" style="width: 300px; height: 225px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Agent perspective view</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robo_e_view_0.jpeg" alt="Humanoid Robot View 3" style="width: 300px; height: 225px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Environment view</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robo_a_view_1.jpeg" alt="Humanoid Robot View 4" style="width: 300px; height: 225px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Dual-arm interaction</p>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">← Scroll horizontally to view more samples →</div>
+    </div>
+    
+    <!-- Open Images Dataset -->
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 15px;">Open Images Dataset</h3>
+    <p style="text-align: center; margin-bottom: 20px; font-style: italic;">Diverse real-world images for property and affordance evaluation across 115 object classes.</p>
+    <div class="dataset-slider">
+      <div class="slider-wrapper">
+        <div class="slider-content">
+          <div class="slider-item">
+            <img src="images/open_images_sample.jpg" alt="Open Images Sample 1" style="width: 280px; height: 210px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Kitchen objects</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/open_images_0.jpeg" alt="Open Images Sample 2" style="width: 280px; height: 210px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Household items</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/open_images_1.jpeg" alt="Open Images Sample 3" style="width: 280px; height: 210px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Tool objects</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/open_images_2.jpeg" alt="Open Images Sample 4" style="width: 280px; height: 210px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 8px; font-size: 12px; white-space: normal;">Food items</p>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">← Scroll horizontally to view more samples →</div>
+    </div>
+    
+    <!-- RoboCasa Objects Dataset -->
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 15px;">RoboCasa Objects Dataset</h3>
+    <p style="text-align: center; margin-bottom: 20px; font-style: italic;">Multi-angle views of household objects (24 perspectives per object) for comprehensive property evaluation. Scroll horizontally to see camera rotation through different angles.</p>
+    
+    <!-- Cheese Object Slider -->
+    <div class="dataset-slider">
+      <h4 style="text-align: center; margin-bottom: 10px;">Cheese Block</h4>
+      <div class="slider-wrapper">
+        <div class="slider-content">
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim0.png" alt="Cheese 0°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">0° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim45.png" alt="Cheese 45°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">45° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim90.png" alt="Cheese 90°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">90° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim135.png" alt="Cheese 135°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">135° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim180.png" alt="Cheese 180°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">180° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim225.png" alt="Cheese 225°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">225° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim270.png" alt="Cheese 270°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">270° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_cheese_unnamed_elev0_azim315.png" alt="Cheese 315°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">315° azimuth</p>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">← Scroll horizontally to see camera rotation →</div>
+    </div>
+    
+    <!-- Donut Object Slider -->
+    <div class="dataset-slider">
+      <h4 style="text-align: center; margin-bottom: 10px;">Donut</h4>
+      <div class="slider-wrapper">
+        <div class="slider-content">
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim0.png" alt="Donut 0°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">0° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim45.png" alt="Donut 45°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">45° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim90.png" alt="Donut 90°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">90° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim135.png" alt="Donut 135°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">135° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim180.png" alt="Donut 180°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">180° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim225.png" alt="Donut 225°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">225° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim270.png" alt="Donut 270°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">270° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_donut_unnamed_elev0_azim315.png" alt="Donut 315°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">315° azimuth</p>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">← Scroll horizontally to see camera rotation →</div>
+    </div>
+    
+    <!-- Baguette Object Slider -->
+    <div class="dataset-slider">
+      <h4 style="text-align: center; margin-bottom: 10px;">Baguette</h4>
+      <div class="slider-wrapper">
+        <div class="slider-content">
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim0.png" alt="Baguette 0°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">0° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim45.png" alt="Baguette 45°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">45° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim90.png" alt="Baguette 90°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">90° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim135.png" alt="Baguette 135°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">135° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim180.png" alt="Baguette 180°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">180° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim225.png" alt="Baguette 225°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">225° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim270.png" alt="Baguette 270°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">270° azimuth</p>
+          </div>
+          <div class="slider-item">
+            <img src="images/robocasa_objects_object_views_baguette_unnamed_elev0_azim315.png" alt="Baguette 315°" style="width: 200px; height: 150px; object-fit: cover; border-radius: 8px;">
+            <p style="margin-top: 5px; font-size: 12px; white-space: normal;">315° azimuth</p>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">← Scroll horizontally to see camera rotation →</div>
+    </div>
+    
+    <p style="text-align: center; margin-top: 20px; font-size: 14px; color: #666;">
+      Each object is captured from 24 different angles (3 elevations × 8 azimuth rotations) to provide comprehensive visual coverage for property understanding evaluation. The horizontal sliders above show the 8 azimuth angles at elevation 0°, demonstrating how the camera rotates around each object.
+    </p>
+  </section>
+
+  <!-- Dataset Overview Section -->
+<section class="summary-container">
+    <h2 class="summary-title">Dataset Overview</h2>
+    <!-- Figure 1 -->
+    <figure class="summary-figure">
+      <!-- Update the src to point to your PAC intro image -->
+      <img src="images/PAC_intro.png" alt="PAC Bench Framework Overview" class="summary-img">
+    </figure>
+    <!-- Summary Text -->
+    <p class="summary-text">
+        PAC Bench evaluates foundation models' understanding of three fundamental components crucial for robotic manipulation: <strong>Properties</strong> (intrinsic object characteristics like material, weight), <strong>Affordances</strong> (action possibilities like graspable, stackable), and <strong>Constraints</strong> (physical limitations like stability, reachability). Our benchmark features over 30,000 annotations across 673 real-world images, 100 humanoid-view scenarios, and 120 simulated constraint scenarios. This comprehensive evaluation reveals significant gaps in VLMs' physical reasoning capabilities, highlighting critical areas for improvement in robotics applications.
+    </p>
+  </section>
+  
+  <!-- Experiments and Results Section -->
+  <section class="experiments-container">
+    <h2 class="experiments-title">Experiments and Results</h2>
+    <!-- Figure 2 -->
+    <figure class="experiments-figure">
+      <!-- Update the src to point to your fig2 image -->
+      <img src="images/plot_dist.png" alt="PAC Bench Dataset Distribution" class="experiments-img">
+    </figure>
+    <!-- Description / Explanation -->
+    <p class="experiments-text">
+        Distribution of annotations in PAC Bench across three dimensions: (Left) physical properties annotated in the dataset, showing the relative frequency of each property; (Center) affordance categories, with slices below 5% omitted for clarity; (Right) constraint domains, contrasting simulation (blue shades) and real-world (green shades) scenarios.
+    </p>
+    <br><br>
+    <figure class="experiments-figure">
+        <!-- Update the src to point to your fig2 image -->
+        <img src="images/pac_time.png" alt="VLM Performance Comparison" class="experiments-img">
+      </figure>
+      <!-- Description / Explanation -->
+      <p class="experiments-text">
+        Comparative PAC understanding profiles of selected VLMs across different model generations. The diverse performance signatures suggest varied developmental trajectories in acquiring physical common sense. Our evaluation reveals significant gaps in current VLMs's ability to understand fundamental physical concepts required for reliable robot manipulation.
+    </p>
+  </section>
+  
+  <!-- Detailed Results Tables Section -->
+  <section class="experiments-container">
+    <h2 class="experiments-title">Detailed Performance Results</h2>
+    
+    <!-- Property Accuracy Table -->
+    <h3 style="text-align: center; margin-top: 30px; margin-bottom: 15px;">Property Understanding Accuracy (%)</h3>
+    <div style="overflow-x: auto; margin: 20px 0;">
+      <table style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 12px;">
+        <thead>
+          <tr style="background-color: #f0f0f0;">
+            <th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: left;">Model</th>
+            <th colspan="6" style="border: 1px solid #ddd; padding: 8px; text-align: center;"><strong>Open Images</strong></th>
+            <th colspan="6" style="border: 1px solid #ddd; padding: 8px; text-align: center;"><strong>Humanoid</strong></th>
+            <th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;"><strong>Avg</strong></th>
+          </tr>
+          <tr style="background-color: #f0f0f0;">
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P1</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P2</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P3</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P4</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P5</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P6</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P1</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P2</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P3</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P4</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P5</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">P6</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="border: 1px solid #ddd; padding: 5px;">Claude 3.5 Sonnet</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">31.9</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">2.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">42.3</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">50.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">28.9</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>50.7</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">52.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">19.4</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">55.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>27.8</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 5px;">Claude 3.7 Sonnet</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">20.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">23.5</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">32.6</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">36.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">66.4</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">37.0</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">47.8</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">30.3</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">48.3</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">55.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">13.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">55.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>38.9</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 5px;">Gemini 2.0 Flash 001</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">19.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>35.3</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>40.8</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>58.0</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">56.1</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>43.9</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>55.2</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">39.8</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">40.3</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">46.8</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">38.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">54.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>44.1</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 5px;">GPT-4.1</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">13.8</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">29.0</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">4.4</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">25.9</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>91.0</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">27.8</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">51.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">55.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">43.3</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>58.2</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>43.8</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>64.2</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>42.4</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 5px;">Llama 4 Maverick</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>36.2</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">34.9</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">37.6</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">47.0</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">90.0</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">14.6</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">43.8</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>77.1</strong></td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">59.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">57.7</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">40.3</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;">54.2</td><td style="border: 1px solid #ddd; padding: 5px; text-align: center;"><strong>49.4</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 14px; text-align: center; margin: 10px 0;"><em>Properties P1–P6: Color, Contents, Weight, Density, Sealing, Hardness. Bold values indicate best performance in each category.</em></p>
+    
+    <!-- Constraint Performance Table -->
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 15px;">Constraint Understanding Accuracy (%)</h3>
+    <div style="overflow-x: auto; margin: 20px 0;">
+      <table style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 11px;">
+        <thead>
+          <tr style="background-color: #f0f0f0;">
+            <th rowspan="2" style="border: 1px solid #ddd; padding: 6px; text-align: left;">Model</th>
+            <th colspan="12" style="border: 1px solid #ddd; padding: 6px; text-align: center;"><strong>Simulation</strong></th>
+            <th colspan="3" style="border: 1px solid #ddd; padding: 6px; text-align: center;"><strong>Real World</strong></th>
+            <th rowspan="2" style="border: 1px solid #ddd; padding: 6px; text-align: center;"><strong>Avg</strong></th>
+          </tr>
+          <tr style="background-color: #f0f0f0;">
+            <th colspan="3" style="border: 1px solid #ddd; padding: 4px; text-align: center; font-size: 10px;">Impossible Place</th>
+            <th colspan="3" style="border: 1px solid #ddd; padding: 4px; text-align: center; font-size: 10px;">Occlusion</th>
+            <th colspan="3" style="border: 1px solid #ddd; padding: 4px; text-align: center; font-size: 10px;">Stability</th>
+            <th colspan="3" style="border: 1px solid #ddd; padding: 4px; text-align: center; font-size: 10px;">Reachability</th>
+            <th colspan="3" style="border: 1px solid #ddd; padding: 4px; text-align: center; font-size: 10px;">Humanoid</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Claude 3.5 Sonnet</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">1.8</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">3.7</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>0.4</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Gemini 2.5 Pro P</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">10.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>20.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>10.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>90.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">30.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">60.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>40.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>30.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>20.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">11.3</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">18.8</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">9.4</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>25.8</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">GPT-4.1</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">50.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>70.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">50.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">11.3</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">13.2</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">9.4</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>13.6</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">GPT-4.1 Mini</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>18.8</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>24.5</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>22.6</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>4.4</strong></td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Llama 3.2 11B Vision I</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>20.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">10.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">30.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">30.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">20.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">20.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">20.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">20.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">10.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>30.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">1.8</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>17.5</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 14px; text-align: center; margin: 10px 0;"><em>Constraint understanding across four simulated domains (Impossible Placement, Occlusion, Stability, Reachability) and real-world humanoid scenarios. Bold values indicate best performance.</em></p>
+    
+    <!-- Add heatmap figure -->
+    <br><br>
+    <figure class="experiments-figure">
+      <img src="images/heatmaps_properties_accuracy.png" alt="Property Accuracy Heatmaps" class="experiments-img">
+    </figure>
+    <p class="experiments-text">
+        Comprehensive heatmap visualization showing property understanding accuracy across all evaluated VLMs and property types. The color intensity represents performance levels, revealing significant performance variations across different physical properties and models.
+    </p>
+    
+    <!-- Add affordance heatmap -->
+    <br><br>
+    <figure class="experiments-figure">
+      <img src="images/heatmap_aff.png" alt="Affordance Recognition Heatmap" class="experiments-img">
+    </figure>
+    <p class="experiments-text">
+        Affordance recognition heatmap demonstrating VLM performance across different object categories. The sparse pattern indicates the significant challenge of comprehensive affordance understanding for current vision-language models.
+    </p>
+    
+    <!-- Critical Missing Table: All Affordances Recognition -->
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 15px;">Comprehensive Affordance Recognition: Identifying ALL Correct Affordances (%)</h3>
+    <div style="overflow-x: auto; margin: 20px 0;">
+      <table style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 11px;">
+        <thead>
+          <tr style="background-color: #f0f0f0;">
+            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Model</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A1</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A2</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A3</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A4</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A5</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A6</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A7</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A8</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A9</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A10</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A11</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A12</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A13</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A14</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A15</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A16</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A17</th>
+            <th style="border: 1px solid #ddd; padding: 5px; text-align: center;">A18</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Claude 3.5 Sonnet</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Claude 3.7 Sonnet</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Gemini 2.0 Flash 001</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">GPT-4.1</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>20.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Llama 4 Scout</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">4.5</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Qwen 2.5 VL</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>11.1</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 14px; text-align: center; margin: 10px 0;"><em><strong>Critical Finding:</strong> When required to identify ALL correct affordances (not just one), performance drops to near-zero across all models and categories, with only isolated exceptions like GPT-4.1 (20.0% on Home Fixtures) and Qwen 2.5 VL (11.1% on Tools & Hardware). This reveals that VLMs can identify primary affordances but lack comprehensive functional understanding.</em></p>
+    
+    <!-- 12-Property Results Table -->
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 15px;">Complete 12-Property Understanding Results (%)</h3>
+    <div style="overflow-x: auto; margin: 20px 0;">
+      <table style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 10px;">
+        <thead>
+          <tr style="background-color: #f0f0f0;">
+            <th style="border: 1px solid #ddd; padding: 6px; text-align: left;">Model</th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P1<br><small>Capacity</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P2<br><small>Color</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P3<br><small>Complexity</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P4<br><small>Consumability</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P5<br><small>Contents</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P6<br><small>Density</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P7<br><small>Hardness</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P8<br><small>Orientation</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P9<br><small>Sealing</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P10<br><small>Stickiness</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P11<br><small>Thickness</small></th>
+            <th style="border: 1px solid #ddd; padding: 4px; text-align: center;">P12<br><small>Weight</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Claude 3.5 Sonnet</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">17.8</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.4</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.3</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">31.9</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">42.3</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">15.8</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">2.7</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">52.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">0.0</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Claude 3.7 Sonnet</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>88.1</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">20.2</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">34.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>91.4</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">23.5</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">36.7</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">37.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">48.7</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">66.4</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>96.6</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">59.2</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">32.6</td></tr>
+          <tr><td style="border: 1px solid #ddd; padding: 4px;">Gemini 2.0 Flash 001</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">59.4</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">19.7</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>84.8</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">7.0</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>35.3</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>58.0</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>43.9</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>57.6</strong></td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">56.1</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">38.2</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;">24.3</td><td style="border: 1px solid #ddd; padding: 3px; text-align: center;"><strong>40.8</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 14px; text-align: center; margin: 10px 0;"><em>Complete property evaluation across all 12 property types shows significant variation in model capabilities. Claude 3.7 Sonnet excels at Capacity (88.1%) and Consumability (91.4%), while Gemini 2.0 Flash shows strength in Complexity understanding (84.8%).</em></p>
+  </section>
+
+
+</body>
+</html>
